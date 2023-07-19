@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import sys
 from inspect import getmembers, isfunction
-from typing import Any, Dict
+from typing import Any
 
 import appdirs
 import pytest
@@ -47,7 +49,7 @@ def test_has_all_properties() -> None:
         "app_name_author_version",
     ],
 )
-def test_compatibility(params: Dict[str, Any], func: str) -> None:
+def test_compatibility(params: dict[str, Any], func: str) -> None:
     # Only test functions that are part of appdirs
     if getattr(appdirs, func, None) is None:
         pytest.skip(f"`{func}` does not exist in `appdirs`")
@@ -55,13 +57,17 @@ def test_compatibility(params: Dict[str, Any], func: str) -> None:
     if sys.platform == "darwin":
         msg = {  # pragma: no cover
             "user_log_dir": "without appname produces NoneType error",
-            "site_config_dir": "ignores the version argument",
-            "user_config_dir": "uses Library/Preferences instead Application Support",
         }
         if func in msg:  # pragma: no cover
             pytest.skip(f"`appdirs.{func}` {msg[func]} on macOS")  # pragma: no cover
+    elif sys.platform != "win32":
+        msg = {  # pragma: no cover
+            "user_log_dir": "Uses XDG_STATE_DIR instead of appdirs.user_data_dir per the XDG spec",
+        }
+        if func in msg:  # pragma: no cover
+            pytest.skip(f"`appdirs.{func}` {msg[func]} on Unix")  # pragma: no cover
 
     new = getattr(platformdirs, func)(*params)
     old = getattr(appdirs, func)(*params)
 
-    assert new == old
+    assert new == old.rstrip("/")
