@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import inspect
+import sys
 from pathlib import Path
-from typing import Optional
 
 import pytest
-from _pytest.monkeypatch import MonkeyPatch
 
 import platformdirs
 from platformdirs.android import Android
@@ -50,15 +51,32 @@ def test_function_interface_is_in_sync(func: str) -> None:
 
 @pytest.mark.parametrize("root", ["A", "/system", None])
 @pytest.mark.parametrize("data", ["D", "/data", None])
-def test_android_active(monkeypatch: MonkeyPatch, root: Optional[str], data: Optional[str]) -> None:
-    for env_var, value in {"ANDROID_DATA": data, "ANDROID_ROOT": root}.items():
+@pytest.mark.parametrize("path", ["/data/data/a/files", "/C"])
+@pytest.mark.parametrize("shell", ["/data/data/com.app/files/usr/bin/sh", "/usr/bin/sh", None])
+@pytest.mark.parametrize("prefix", ["/data/data/com.termux/files/usr", None])
+def test_android_active(  # noqa: PLR0913
+    monkeypatch: pytest.MonkeyPatch,
+    root: str | None,
+    data: str | None,
+    path: str,
+    shell: str | None,
+    prefix: str | None,
+) -> None:
+    for env_var, value in {"ANDROID_DATA": data, "ANDROID_ROOT": root, "SHELL": shell, "PREFIX": prefix}.items():
         if value is None:
             monkeypatch.delenv(env_var, raising=False)
         else:
             monkeypatch.setenv(env_var, value)
 
-    expected = root == "/system" and data == "/data"
+    from platformdirs.android import _android_folder
+
+    _android_folder.cache_clear()
+    monkeypatch.setattr(sys, "path", ["/A", "/B", path])
+
+    expected = (
+        root == "/system" and data == "/data" and shell is None and prefix is None and _android_folder() is not None
+    )
     if expected:
-        assert platformdirs._set_platform_dir_class() is Android
+        assert platformdirs._set_platform_dir_class() is Android  # noqa: SLF001
     else:
-        assert platformdirs._set_platform_dir_class() is not Android
+        assert platformdirs._set_platform_dir_class() is not Android  # noqa: SLF001
