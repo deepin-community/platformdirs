@@ -1,3 +1,22 @@
+platformdirs (4.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 13 Nov 2023 17:29:07 +0200
+
+platformdirs (3.11.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Clean version.py, created by setuptools_scm.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 08 Oct 2023 16:10:03 +0200
+
+platformdirs (3.10.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 30 Jul 2023 13:57:20 +0200
+
 platformdirs (3.9.1-1) unstable; urgency=medium
 
   * New upstream release.
