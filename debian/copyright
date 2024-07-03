@@ -1,5 +1,5 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: platformidrs
+Upstream-Name: platformdirs
 Source: https://github.com/platformdirs/platformdirs
 
 Files: *
@@ -8,7 +8,7 @@ License: Expat
 
 Files: debian/*
 Copyright: 2014 Benjamin Drung <benjamin.drung@profitbricks.com>
-           2022-2023 Stefano Rivera <stefanor@debian.org>
+           2022-2024 Stefano Rivera <stefanor@debian.org>
 License: Expat
 
 License: Expat
