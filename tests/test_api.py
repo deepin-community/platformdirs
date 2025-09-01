@@ -93,7 +93,8 @@ def test_android_active(  # noqa: PLR0913
 
 def _fake_import(name: str, *args: Any, **kwargs: Any) -> ModuleType:  # noqa: ANN401
     if name == "ctypes":
-        raise ModuleNotFoundError("No module named %s" % name)
+        msg = f"No module named {name}"
+        raise ModuleNotFoundError(msg)
     return builtin_import(name, *args, **kwargs)
 
 
@@ -120,3 +121,12 @@ def test_no_ctypes() -> None:
     import platformdirs  # noqa: PLC0415
 
     assert platformdirs
+
+
+def test_mypy_subclassing() -> None:
+    # Ensure that PlatformDirs / AppDirs is seen as a valid superclass by mypy
+    # This is a static type-checking test to ensure we work around
+    # the following mypy issue: https://github.com/python/mypy/issues/10962
+    class PlatformDirsSubclass(platformdirs.PlatformDirs): ...
+
+    class AppDirsSubclass(platformdirs.AppDirs): ...

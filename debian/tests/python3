@@ -6,5 +6,5 @@ cd "$AUTOPKGTEST_TMP"
 
 for py in $(py3versions -s); do
 	echo "=== $py ==="
-	$py -m pytest tests/
+	$py -m pytest --ignore=tests/test_comp_with_appdirs.py tests/
 done

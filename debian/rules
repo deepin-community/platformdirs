@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
 export PYBUILD_NAME=platformdirs
+# appdirs is RC buggy on purpose "#1060427: Do not release with trixie"
+export PYBUILD_TEST_ARGS=--ignore=tests/test_comp_with_appdirs.py
 
 %:
 	dh $@ --buildsystem=pybuild
